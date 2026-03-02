@@ -22,11 +22,11 @@ const state = {
 
 let loadGeneration = 0;
 
-const VALID_INTERVALS = ['1d', '1w', '1m', '1y'];
+const VALID_INTERVALS = ['1d', '1w', '1m', '1y', '10y', 'all'];
 const VALID_TOPS = [1, 3, 5, 10];
 const INITIAL_PERIODS = 5;
 const SCROLL_LOAD_COUNT = 3;
-const MAX_BOUNDARIES_BY_INTERVAL = { '1d': 730, '1w': 260, '1m': 240, '1y': 50 };
+const MAX_BOUNDARIES_BY_INTERVAL = { '1d': 730, '1w': 260, '1m': 240, '1y': 50, '10y': 5, 'all': 1 };
 function getMaxBoundaries() {
   return MAX_BOUNDARIES_BY_INTERVAL[state.interval] || 200;
 }

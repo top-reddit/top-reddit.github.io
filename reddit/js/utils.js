@@ -37,6 +37,10 @@ export function formatYearHeader(unixSec) {
   return new Date(unixSec * 1000).getFullYear().toString();
 }
 
+export function formatDecadeHeader(startYear) {
+  return `${startYear}s`;
+}
+
 export function archiveUrl(originalUrl) {
   return 'https://web.archive.org/web/0/' + originalUrl;
 }
@@ -73,7 +77,7 @@ export function decodeHtmlEntities(str) {
 
 /**
  * Generate time boundaries for a given interval.
- * @param {string} interval - '1d', '1w', '1m', '1y'
+ * @param {string} interval - '1d', '1w', '1m', '1y', '10y', 'all'
  * @param {number} count - max number of boundaries
  * @param {Date} referenceDate - end reference point (default: now)
  * @param {Date|null} fromDate - if set, exclude boundaries ending before this date
@@ -123,8 +127,22 @@ export function calculateTimeBoundaries(interval, count, referenceDate = new Dat
         label = formatYearHeader(start.getTime() / 1000);
         break;
       }
+      case '10y': {
+        const decadeStart = Math.floor(ref.getFullYear() / 10) * 10 - (i * 10);
+        start = new Date(decadeStart, 0, 1, 0, 0, 0);
+        end = new Date(decadeStart + 9, 11, 31, 23, 59, 59);
+        label = formatDecadeHeader(decadeStart);
+        break;
+      }
+      case 'all': {
+        start = new Date(2005, 5, 1, 0, 0, 0); // Reddit founding
+        end = new Date(ref.getFullYear(), ref.getMonth(), ref.getDate(), 23, 59, 59);
+        label = 'All time';
+        break;
+      }
     }
 
+    if (!start || !end) break;
     const endTs = Math.floor(end.getTime() / 1000);
 
     // Stop if this boundary ends before the from date
