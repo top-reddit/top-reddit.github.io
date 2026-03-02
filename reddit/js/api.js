@@ -67,12 +67,40 @@ export async function fetchSubredditAbout(subreddit) {
   return cache[subreddit.toLowerCase()] || null;
 }
 
+// --- SFW overrides (subreddits that should never be blocked) ---
+
+let _sfwOverrides = null;
+let _sfwOverridesPromise = null;
+
+async function loadSfwOverrides() {
+  if (_sfwOverrides) return _sfwOverrides;
+  if (_sfwOverridesPromise) return _sfwOverridesPromise;
+
+  _sfwOverridesPromise = (async () => {
+    try {
+      const response = await fetch('data/sfw_overrides.json');
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const list = await response.json();
+      _sfwOverrides = new Set(list.map(s => s.toLowerCase()));
+    } catch (e) {
+      _sfwOverrides = new Set();
+    }
+    _sfwOverridesPromise = null;
+    return _sfwOverrides;
+  })();
+  return _sfwOverridesPromise;
+}
+
 /**
  * Check if a subreddit is NSFW.
- * First checks the pre-fetched cache, then falls back to PullPush API
- * to check the over_18 flag on a recent post.
+ * First checks sfw_overrides.json (always allowed), then the pre-fetched
+ * about cache, then falls back to PullPush API to check the over_18 flag.
  */
 export async function checkSubredditNsfw(subreddit) {
+  // Check SFW overrides first — these are never blocked
+  const overrides = await loadSfwOverrides();
+  if (overrides.has(subreddit.toLowerCase())) return false;
+
   const about = await fetchSubredditAbout(subreddit);
   if (about) return !!about.over_18;
 

@@ -69,6 +69,7 @@ function init() {
   setupDateSlider();
   setupLoadMoreButton();
   setupInfiniteScroll();
+  setupFavoriteButton();
 
   if (state.subreddit) {
     document.title = `r/${state.subreddit} | topindex | top reddit posts`;
@@ -76,6 +77,65 @@ function init() {
   } else {
     input.focus();
   }
+}
+
+// --- Favorites ---
+
+function getFavorites() {
+  try {
+    return JSON.parse(localStorage.getItem('favoriteSubreddits') || '[]');
+  } catch { return []; }
+}
+
+function saveFavorites(favs) {
+  localStorage.setItem('favoriteSubreddits', JSON.stringify(favs));
+}
+
+function isFavorite(subreddit) {
+  return getFavorites().some(f => f.toLowerCase() === subreddit.toLowerCase());
+}
+
+function toggleFavorite(subreddit) {
+  const favs = getFavorites();
+  const idx = favs.findIndex(f => f.toLowerCase() === subreddit.toLowerCase());
+  if (idx >= 0) {
+    favs.splice(idx, 1);
+  } else {
+    favs.push(subreddit);
+  }
+  saveFavorites(favs);
+}
+
+function setupFavoriteButton() {
+  const btn = document.getElementById('favorite-btn');
+  if (!btn) return;
+
+  function updateBtn() {
+    if (!state.subreddit) {
+      btn.style.display = 'none';
+      return;
+    }
+    btn.style.display = '';
+    const fav = isFavorite(state.subreddit);
+    btn.classList.toggle('is-favorite', fav);
+    btn.title = fav ? 'Remove from favorites' : 'Add to favorites';
+  }
+
+  btn.addEventListener('click', () => {
+    if (!state.subreddit) return;
+    toggleFavorite(state.subreddit);
+    updateBtn();
+  });
+
+  updateBtn();
+
+  // Re-check when subreddit changes (form submit)
+  const origResetAndReload = resetAndReload;
+  const form = document.getElementById('subreddit-search-form');
+  form.addEventListener('submit', () => {
+    // Defer to after state.subreddit is updated
+    setTimeout(updateBtn, 0);
+  });
 }
 
 function setupControlButtons() {

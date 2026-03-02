@@ -112,10 +112,64 @@ function setupDirectorySearch() {
   });
 }
 
+// --- Favorites ---
+
+function getFavorites() {
+  try {
+    return JSON.parse(localStorage.getItem('favoriteSubreddits') || '[]');
+  } catch { return []; }
+}
+
+function saveFavorites(favs) {
+  localStorage.setItem('favoriteSubreddits', JSON.stringify(favs));
+}
+
+function renderFavorites() {
+  const section = document.getElementById('favorites-section');
+  const list = document.getElementById('favorites-list');
+  if (!section || !list) return;
+
+  const favs = getFavorites();
+  if (favs.length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+
+  section.style.display = '';
+  list.innerHTML = '';
+
+  favs.forEach(name => {
+    const chip = document.createElement('span');
+    chip.className = 'favorite-chip';
+
+    const link = document.createElement('a');
+    link.href = `subreddit.html?name=${encodeURIComponent(name)}`;
+    link.textContent = `r/${name}`;
+    link.style.color = 'inherit';
+    link.style.textDecoration = 'none';
+
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'remove-fav';
+    removeBtn.innerHTML = '&times;';
+    removeBtn.title = `Remove r/${name} from favorites`;
+    removeBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const updated = getFavorites().filter(f => f.toLowerCase() !== name.toLowerCase());
+      saveFavorites(updated);
+      renderFavorites();
+    });
+
+    chip.append(link, removeBtn);
+    list.appendChild(chip);
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const listLargest = document.getElementById('list-largest');
   const listWeekly = document.getElementById('list-weekly');
 
+  renderFavorites();
   loadColumn(listLargest, 'largest');
   loadColumn(listWeekly, 'weekly');
   setupDirectorySearch();

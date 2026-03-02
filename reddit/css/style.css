@@ -119,6 +119,46 @@ a:hover {
   min-height: 18px;
 }
 
+/* === Favorite Button === */
+
+.favorite-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  color: var(--color-text-muted);
+  transition: color 0.15s, transform 0.15s;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.favorite-btn:hover {
+  color: #f5a623;
+  transform: scale(1.15);
+}
+
+.favorite-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.favorite-btn .star-filled {
+  display: none;
+}
+
+.favorite-btn.is-favorite {
+  color: #f5a623;
+}
+
+.favorite-btn.is-favorite .star-outline {
+  display: none;
+}
+
+.favorite-btn.is-favorite .star-filled {
+  display: block;
+}
+
 /* === NSFW Blocked === */
 
 .nsfw-blocked {
@@ -126,6 +166,68 @@ a:hover {
   padding: var(--spacing-xl) var(--spacing-md);
   color: var(--color-text-muted);
   font-size: 16px;
+}
+
+/* === Favorites Section (Directory Page) === */
+
+.favorites-section {
+  margin-bottom: var(--spacing-lg);
+}
+
+.favorites-section h2 {
+  margin: 0 0 var(--spacing-sm);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0 4px;
+}
+
+.favorites-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.favorite-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.15s;
+  text-decoration: none;
+}
+
+.favorite-chip:visited {
+  color: var(--color-text);
+}
+
+.favorite-chip:hover {
+  border-color: var(--color-accent);
+  background: var(--color-accent-light);
+  text-decoration: none;
+}
+
+.favorite-chip .remove-fav {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  line-height: 1;
+  padding: 0 0 0 2px;
+  transition: color 0.15s;
+}
+
+.favorite-chip .remove-fav:hover {
+  color: var(--color-nsfw);
 }
 
 /* === Directory Page === */

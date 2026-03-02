@@ -24,6 +24,10 @@
   <main class="subreddit-detail">
     <div class="subreddit-header">
       <form id="subreddit-search-form" class="subreddit-search-form">
+        <button id="favorite-btn" class="favorite-btn" style="display:none" type="button" aria-label="Toggle favorite" title="Add to favorites">
+          <svg class="star-outline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg class="star-filled" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </button>
         <span class="search-prefix">r/</span>
         <input type="text" id="subreddit-input" class="subreddit-input" placeholder="enter subreddit name..." autocomplete="off" spellcheck="false">
         <button type="submit" class="search-btn">Go</button>
