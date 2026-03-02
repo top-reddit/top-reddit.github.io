@@ -557,10 +557,8 @@ function setupScrollTracking(ids) {
 function setupTimelineTooltip() {
     const tooltip = document.getElementById('tl-tooltip');
     if (!tooltip) return;
-    const timeline = document.getElementById('timeline');
-    if (!timeline) return;
 
-    // Desktop: mouse hover tooltips
+    // Desktop only: mouse hover tooltips
     document.querySelectorAll('.tl-item[data-label]').forEach(item => {
         item.addEventListener('mouseenter', function() {
             const label = this.dataset.label;
@@ -574,77 +572,6 @@ function setupTimelineTooltip() {
         item.addEventListener('mouseleave', function() {
             tooltip.classList.remove('visible');
         });
-    });
-
-    // Mobile: touch drag tooltips
-    let touchActive = false;
-    let lastTouchedItem = null;
-
-    function showTooltipForItem(item) {
-        const label = item.dataset.label;
-        if (label) {
-            const rect = item.getBoundingClientRect();
-            tooltip.textContent = label;
-            tooltip.style.top = (rect.top + rect.height / 2) + 'px';
-            tooltip.style.right = (window.innerWidth - rect.left + 8) + 'px';
-            tooltip.classList.add('visible');
-        } else {
-            // Items without data-label (yearly/10y with visible text)
-            const yearText = item.querySelector('.tl-year-text');
-            if (yearText) {
-                const rect = item.getBoundingClientRect();
-                tooltip.textContent = yearText.textContent;
-                tooltip.style.top = (rect.top + rect.height / 2) + 'px';
-                tooltip.style.right = (window.innerWidth - rect.left + 8) + 'px';
-                tooltip.classList.add('visible');
-            } else {
-                tooltip.classList.remove('visible');
-            }
-        }
-    }
-
-    function handleTouchMove(e) {
-        const touch = e.touches[0];
-        if (!touch) return;
-        const el = document.elementFromPoint(touch.clientX, touch.clientY);
-        if (!el) return;
-        const item = el.closest('.tl-item');
-        if (!item) {
-            tooltip.classList.remove('visible');
-            lastTouchedItem = null;
-            return;
-        }
-        lastTouchedItem = item;
-        showTooltipForItem(item);
-    }
-
-    timeline.addEventListener('touchstart', function(e) {
-        touchActive = true;
-        lastTouchedItem = null;
-        handleTouchMove(e);
-        e.preventDefault();
-    }, { passive: false });
-
-    timeline.addEventListener('touchmove', function(e) {
-        if (!touchActive) return;
-        handleTouchMove(e);
-        e.preventDefault();
-    }, { passive: false });
-
-    timeline.addEventListener('touchend', function() {
-        if (!touchActive) return;
-        touchActive = false;
-        tooltip.classList.remove('visible');
-        if (lastTouchedItem && lastTouchedItem.dataset.id) {
-            scrollToId(lastTouchedItem.dataset.id);
-        }
-        lastTouchedItem = null;
-    });
-
-    timeline.addEventListener('touchcancel', function() {
-        touchActive = false;
-        tooltip.classList.remove('visible');
-        lastTouchedItem = null;
     });
 }
 
