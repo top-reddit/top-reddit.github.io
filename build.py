@@ -89,10 +89,9 @@ def patch_reddit_html():
     reddit_dir = os.path.join(SITE_DIR, "reddit")
     html_files = [f for f in os.listdir(reddit_dir) if f.endswith(".html")]
 
-    # Pattern: <span class="title-subtitle">| top reddit posts</span>
-    # Only wrap text in link; do not add classes — source CSS handles hover
-    # via .site-header h1 a:hover and .title-subtitle:hover
-    pattern = r'(<span class="title-subtitle">\| )(top reddit posts)(</span>)'
+    # Pattern: <span class="title-subtitle">top reddit posts</span>
+    # Only wrap text in link; source CSS handles hover via .title-subtitle:hover
+    pattern = r'(<span class="title-subtitle">)(top reddit posts)(</span>)'
     replacement = r'\1<a href="./">\2</a>\3'
 
     for fname in html_files:
