@@ -32,7 +32,9 @@ SITES = [
         "icon_svg": (
             '<svg class="site-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">'
             '<rect width="32" height="32" rx="6" fill="#ff6600"/>'
-            '<polygon points="16,8 24,20 8,20" fill="white"/>'
+            '<text x="16" y="23" text-anchor="middle" '
+            'font-family="Arial,Helvetica,sans-serif" '
+            'font-size="20" font-weight="700" fill="white">hn</text>'
             "</svg>"
         ),
     },

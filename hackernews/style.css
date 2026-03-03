@@ -73,7 +73,7 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 24px 40px 80px 16px;
+    padding: 0 40px 80px 16px;
     color: var(--text);
     line-height: 1.4;
     background-color: var(--bg);
@@ -81,8 +81,13 @@ body {
 
 /* Title bar */
 .title-bar {
-    text-align: center;
-    padding: 8px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    margin-bottom: 8px;
+    background: var(--bg-header);
+    border-bottom: 1px solid var(--border-header);
 }
 .title-bar h1 {
     font-size: 20px;
@@ -616,9 +621,9 @@ summary:hover .permalink {
 /* Responsive — Mobile Card Layout */
 @media (max-width: 768px) {
 
-    .title-bar { position: sticky; top: 0; z-index: 100; background: var(--bg); }
+    .title-bar { position: sticky; top: 0; z-index: 100; background: var(--bg-header); }
     .controls { gap: 12px; }
-    body { padding: 12px 12px 80px 12px; }  /* no right padding for timeline on mobile */
+    body { padding: 0 12px 80px 12px; }
 
     /* --- Hide timeline on mobile --- */
     #timeline { display: none !important; }
