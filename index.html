@@ -271,10 +271,6 @@ function toggleTheme() {
     var c = t.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     t.setAttribute('data-theme', c);
     localStorage.setItem('ti_theme', c);
-    // Sync with sub-site themes
-    localStorage.setItem('theme', c);
-    localStorage.setItem('hn_theme', c);
-    localStorage.setItem('lob_theme', c);
 }
 </script>
 </body>

@@ -100,6 +100,23 @@ def sync_sources():
     print()
 
 
+UNIFIED_THEME_KEY = "ti_theme"
+
+
+def unify_theme_key(directory, old_key):
+    """Replace a sub-site's theme localStorage key with the unified key in all HTML and JS files."""
+    if old_key == UNIFIED_THEME_KEY:
+        return
+    for fname in os.listdir(directory):
+        if not (fname.endswith(".html") or fname.endswith(".js")):
+            continue
+        path = os.path.join(directory, fname)
+        text = open(path, "r").read()
+        new_text = text.replace(f"'{old_key}'", f"'{UNIFIED_THEME_KEY}'")
+        if new_text != text:
+            open(path, "w").write(new_text)
+
+
 # --- HTML Patching ---
 
 
@@ -113,6 +130,7 @@ REDDIT_TITLE_CSS = """\
 def patch_reddit_html():
     """Patch reddit HTML files: make subtitle text a link to ./"""
     reddit_dir = os.path.join(SITE_DIR, "reddit")
+    unify_theme_key(reddit_dir, "theme")
     html_files = [f for f in os.listdir(reddit_dir) if f.endswith(".html")]
 
     # Pattern: <span class="title-subtitle">top reddit posts</span>
@@ -148,6 +166,7 @@ HN_TITLE_CSS = """\
 def patch_hackernews_html():
     """Patch hackernews HTML files: fix home link href and wrap subtitle in link."""
     hn_dir = os.path.join(SITE_DIR, "hackernews")
+    unify_theme_key(hn_dir, "hn_theme")
     patches = {
         "index.html": {
             "h1_old": '<h1><a href="index.html" class="home-link">topindex</a> <span class="title-sep">|</span> <span class="title-subtitle">top hacker news posts</span></h1>',
@@ -204,6 +223,7 @@ LOBSTERS_TITLE_CSS = """\
 def patch_lobsters_html():
     """Patch lobsters HTML files: fix home link href and wrap subtitle in link."""
     lob_dir = os.path.join(SITE_DIR, "lobsters")
+    unify_theme_key(lob_dir, "lob_theme")
     patches = {
         "index.html": {
             "h1_old": '<h1><a href="index.html" class="home-link">topindex</a> <span class="title-sep">|</span> <span class="title-subtitle">top lobsters posts</span></h1>',
@@ -523,10 +543,6 @@ function toggleTheme() {{
     var c = t.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     t.setAttribute('data-theme', c);
     localStorage.setItem('ti_theme', c);
-    // Sync with sub-site themes
-    localStorage.setItem('theme', c);
-    localStorage.setItem('hn_theme', c);
-    localStorage.setItem('lob_theme', c);
 }}
 </script>
 </body>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <script>!function(){var e=localStorage.getItem('theme');e||(e=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',e)}()</script>
+  <script>!function(){var e=localStorage.getItem('ti_theme');e||(e=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',e)}()</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>topindex | top reddit posts</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -51,7 +51,7 @@
     Data from <a href="https://subranking.com" target="_blank" rel="noopener">subranking.com</a> &amp;
     <a href="https://pullpush.io" target="_blank" rel="noopener">PullPush API</a>
   </footer>
-  <script>function toggleTheme(){var t=document.documentElement,c=t.getAttribute('data-theme')==='dark'?'light':'dark';t.setAttribute('data-theme',c);localStorage.setItem('theme',c)}</script>
+  <script>function toggleTheme(){var t=document.documentElement,c=t.getAttribute('data-theme')==='dark'?'light':'dark';t.setAttribute('data-theme',c);localStorage.setItem('ti_theme',c)}</script>
   <script type="module" src="js/directory-page.js"></script>
 </body>
 </html>

@@ -17,7 +17,7 @@ const MONTH_NAMES = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','O
 const MONTH_FULL = ['','January','February','March','April','May','June','July','August','September','October','November','December'];
 
 function initTheme() {
-    const saved = localStorage.getItem('lob_theme');
+    const saved = localStorage.getItem('ti_theme');
     if (saved) {
         document.documentElement.dataset.theme = saved;
     } else {
@@ -30,7 +30,7 @@ function toggleTheme() {
     const html = document.documentElement;
     const isDark = html.dataset.theme === 'dark';
     html.dataset.theme = isDark ? 'light' : 'dark';
-    localStorage.setItem('lob_theme', html.dataset.theme);
+    localStorage.setItem('ti_theme', html.dataset.theme);
 }
 
 initTheme();
