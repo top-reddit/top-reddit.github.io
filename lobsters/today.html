@@ -273,7 +273,7 @@ function updateLastUpdated() {
     const ampm = h >= 12 ? 'PM' : 'AM';
     const h12 = h % 12 || 12;
     const timeStr = h12 + ':' + m + ' ' + ampm;
-    el.textContent = (usedCache ? 'Cached from ' : 'Updated ') + timeStr;
+    el.textContent = 'Updated ' + timeStr;
 }
 
 /* Sort & Filter */
