@@ -38,7 +38,7 @@
             <button data-topn="10" onclick="setTopN(10)">10</button>
         </div>
         <a href="index.html" class="nav-link" title="Historical archive">Archive</a>
-        <button class="nav-link" onclick="fetchAll(true)" title="Refresh data" style="cursor:pointer;border:none;font-family:inherit;">&#x21bb; Refresh</button>
+        <button id="refresh-button" class="nav-link" onclick="fetchAll(true)" title="Refresh data" style="cursor:pointer;border:none;font-family:inherit;">&#x21bb; Refresh</button>
     </div>
     <div class="last-updated" id="last-updated"></div>
 </div>
@@ -63,6 +63,7 @@ const REFRESH_INTERVAL = 5 * 60 * 1000;
 const CACHE_TTL = 6 * 60 * 60 * 1000;
 const CACHE_KEY_TODAY = 'hn_top_today_cache';
 const CACHE_KEY_WEEK = 'hn_top_week_cache';
+const VISITED_LINK_SELECTOR = 'a[data-link="ext"], a[data-link="hn"], a[data-link="arc"]';
 
 /* Theme */
 function initTheme() {
@@ -105,6 +106,14 @@ function openAllLinks(sectionId, linkType) {
     if (!section) return;
     const links = section.querySelectorAll('a[data-link="' + linkType + '"]');
     links.forEach(a => window.open(a.href, '_blank'));
+}
+
+function setRefreshLoading(isLoading) {
+    const button = document.getElementById('refresh-button');
+    if (!button) return;
+    button.disabled = isLoading;
+    button.setAttribute('aria-busy', isLoading ? 'true' : 'false');
+    button.textContent = isLoading ? 'Loading...' : '\u21bb Refresh';
 }
 
 function timeAgo(dateStr) {
@@ -182,7 +191,8 @@ async function fetchFeed(cacheKey, timeRangeSeconds, totalHits) {
 async function fetchAll(forceRefresh) {
     const loadingEl = document.getElementById('loading');
     const hadData = todayStories.length > 0 || weekStories.length > 0;
-    if (!hadData) loadingEl.style.display = 'block';
+    if (forceRefresh || !hadData) loadingEl.style.display = 'block';
+    setRefreshLoading(!!forceRefresh);
 
     if (forceRefresh) {
         localStorage.removeItem(CACHE_KEY_TODAY);
@@ -198,10 +208,12 @@ async function fetchAll(forceRefresh) {
         weekStories = weekResult.data;
         lastFetchTimestamp = Math.min(todayResult.timestamp, weekResult.timestamp);
         loadingEl.style.display = 'none';
+        setRefreshLoading(false);
         updateLastUpdated();
         render();
     } catch (e) {
         loadingEl.style.display = 'none';
+        setRefreshLoading(false);
         if (!hadData) {
             document.getElementById('content').innerHTML =
                 '<p style="text-align:center;color:var(--text-faint);padding:40px;">Failed to load data from Algolia API.</p>';
@@ -315,13 +327,13 @@ function render() {
 /* Visited links */
 function restoreVisitedLinks() {
     const visited = JSON.parse(localStorage.getItem('hn_visited') || '{}');
-    document.querySelectorAll('a[data-link="ext"]').forEach(a => {
+    document.querySelectorAll(VISITED_LINK_SELECTOR).forEach(a => {
         if (visited[a.href]) a.classList.add('visited');
     });
 }
 document.addEventListener('mousedown', function(e) {
     if (e.button === 2) return;
-    const a = e.target.closest('a[data-link="ext"]');
+    const a = e.target.closest(VISITED_LINK_SELECTOR);
     if (!a) return;
     const visited = JSON.parse(localStorage.getItem('hn_visited') || '{}');
     a.classList.add('visited');

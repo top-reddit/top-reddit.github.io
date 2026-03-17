@@ -165,6 +165,10 @@ body {
     background: var(--bg-btn-hover);
     text-decoration: none;
 }
+.nav-link:disabled {
+    cursor: default;
+    opacity: 0.7;
+}
 .last-updated {
     font-size: 11px;
     color: var(--text-muted);
@@ -362,6 +366,9 @@ tbody tr:hover {
 .col-comments a:hover {
     text-decoration: underline;
 }
+.col-comments a.visited {
+    color: var(--text-visited);
+}
 .col-title a {
     color: var(--text-link);
     text-decoration: none;
@@ -382,6 +389,9 @@ tbody tr:hover {
 }
 .col-archived a:hover {
     color: var(--accent);
+}
+.col-archived a.visited {
+    color: var(--text-visited);
 }
 .col-user {
     width: 90px;
@@ -782,6 +792,9 @@ summary:hover .permalink {
     .post-row .col-archived a {
         font-size: 12px;
         color: var(--text-faint);
+    }
+    .post-row .col-archived a.visited {
+        color: var(--text-visited);
     }
 
     /* --- Sections spacing --- */

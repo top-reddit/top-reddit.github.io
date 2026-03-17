@@ -225,11 +225,9 @@ function openAllLinks(sectionId, linkType) {
     let changed = false;
     links.forEach(a => {
         window.open(a.href, '_blank');
-        if (linkType === 'ext') {
-            a.classList.add('visited');
-            visited[a.href] = true;
-            changed = true;
-        }
+        a.classList.add('visited');
+        visited[a.href] = true;
+        changed = true;
     });
     if (changed) localStorage.setItem('lob_visited', JSON.stringify(visited));
 }
@@ -790,13 +788,13 @@ function setupTimelineTooltip() {
 
 function restoreVisitedLinks() {
     const visited = JSON.parse(localStorage.getItem('lob_visited') || '{}');
-    document.querySelectorAll('a[data-link="ext"]').forEach(a => {
+    document.querySelectorAll('a[data-link="ext"], a[data-link="arc"], a[data-link="lob"]').forEach(a => {
         if (visited[a.href]) a.classList.add('visited');
     });
 }
 document.addEventListener('mousedown', function(e) {
     if (e.button === 2) return;
-    const a = e.target.closest('a[data-link="ext"]');
+    const a = e.target.closest('a[data-link="ext"], a[data-link="arc"], a[data-link="lob"]');
     if (!a) return;
     const visited = JSON.parse(localStorage.getItem('lob_visited') || '{}');
     a.classList.add('visited');

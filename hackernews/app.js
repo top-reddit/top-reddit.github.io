@@ -10,6 +10,7 @@ const INTERVAL_MAP = { '1w': 'weekly', '1m': 'monthly', '1y': 'yearly', '10y': '
 const INTERVAL_REVERSE = { 'weekly': '1w', 'monthly': '1m', 'yearly': '1y', '10y': '10y', 'all': 'all' };
 const VALID_TOPN = [1, 3, 5, 10];
 const VALID_SORTS = ['score', 'comments', 'date'];
+const VISITED_LINK_SELECTOR = 'a[data-link="ext"], a[data-link="hn"], a[data-link="arc"]';
 
 const MONTH_NAMES = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const MONTH_FULL = ['','January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -580,13 +581,13 @@ function setupTimelineTooltip() {
 
 function restoreVisitedLinks() {
     const visited = JSON.parse(localStorage.getItem('hn_visited') || '{}');
-    document.querySelectorAll('a[data-link="ext"]').forEach(a => {
+    document.querySelectorAll(VISITED_LINK_SELECTOR).forEach(a => {
         if (visited[a.href]) a.classList.add('visited');
     });
 }
 document.addEventListener('mousedown', function(e) {
     if (e.button === 2) return;
-    const a = e.target.closest('a[data-link="ext"]');
+    const a = e.target.closest(VISITED_LINK_SELECTOR);
     if (!a) return;
     const visited = JSON.parse(localStorage.getItem('hn_visited') || '{}');
     a.classList.add('visited');

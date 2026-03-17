@@ -372,6 +372,12 @@ tbody tr:hover {
 .col-title a.visited {
     color: var(--text-visited);
 }
+.col-archived a.visited {
+    color: var(--text-visited);
+}
+.col-comments a.visited {
+    color: var(--text-visited);
+}
 .col-archived {
     width: 65px;
 }
