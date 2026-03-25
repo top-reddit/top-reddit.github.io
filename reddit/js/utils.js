@@ -86,7 +86,9 @@ export function decodeHtmlEntities(str) {
 export function calculateTimeBoundaries(interval, count, referenceDate = new Date(), fromDate = null, toDate = null) {
   const boundaries = [];
   const ref = new Date(toDate || referenceDate);
+  const REDDIT_FOUNDED_TS = 1119484800; // June 23, 2005
   const fromTs = fromDate ? Math.floor(fromDate.getTime() / 1000) : null;
+  const effectiveFromTs = fromTs || REDDIT_FOUNDED_TS;
 
   for (let i = 0; i < count; i++) {
     let start, end, label;
@@ -145,8 +147,8 @@ export function calculateTimeBoundaries(interval, count, referenceDate = new Dat
     if (!start || !end) break;
     const endTs = Math.floor(end.getTime() / 1000);
 
-    // Stop if this boundary ends before the from date
-    if (fromTs && endTs < fromTs) break;
+    // Stop if this boundary ends before the from date (or Reddit founding)
+    if (endTs < effectiveFromTs) break;
 
     boundaries.push({
       start: Math.floor(start.getTime() / 1000),

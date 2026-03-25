@@ -354,6 +354,7 @@ body:has(.directory-page) .site-header-inner {
   max-width: var(--max-width);
   margin: 0 auto;
   padding: var(--spacing-md);
+  padding-right: 50px;
 }
 
 .subreddit-header {
@@ -458,35 +459,17 @@ body:has(.directory-page) .site-header-inner {
   color: var(--color-accent);
 }
 
-/* Date range slider */
-.date-slider-group {
+/* Date range slider — vertical fixed panel */
+.date-slider-panel {
+  position: fixed;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-  margin-left: auto;
-  width: 280px;
-  flex-shrink: 0;
-}
-
-.date-range-label {
-  font-size: 12px;
-  color: var(--color-text);
-  font-weight: 700;
-  white-space: nowrap;
-  text-align: center;
-  width: 100%;
-}
-
-.date-slider-row {
-  display: flex;
   align-items: center;
-  gap: var(--spacing-xs);
-  width: 100%;
-}
-
-.date-range-slider {
-  flex: 1;
+  gap: 8px;
+  z-index: 100;
 }
 
 .date-range-clear {
@@ -517,9 +500,10 @@ body:has(.directory-page) .site-header-inner {
   visibility: hidden;
 }
 
-/* noUiSlider theme overrides — Bokeh style */
+/* noUiSlider theme overrides — vertical Bokeh style */
 .noUi-target {
-  height: 8px !important;
+  width: 8px !important;
+  height: 300px !important;
   border: 1px solid #ccc !important;
   border-radius: 4px !important;
   background: #e6e6e6 !important;
@@ -532,14 +516,14 @@ body:has(.directory-page) .site-header-inner {
 }
 
 .noUi-handle {
-  width: 14px !important;
-  height: 22px !important;
+  width: 22px !important;
+  height: 14px !important;
   border-radius: 3px !important;
   border: 1px solid #bbb !important;
   background: #f0f0f0 !important;
   box-shadow: none !important;
-  top: -8px !important;
   right: -7px !important;
+  bottom: -7px !important;
   cursor: grab;
 }
 
@@ -565,13 +549,11 @@ body:has(.directory-page) .site-header-inner {
   border: none;
   border-radius: 3px;
   padding: 2px 5px;
-  opacity: 0;
-  transition: opacity 0.15s;
-}
-
-.noUi-handle:hover .noUi-tooltip,
-.noUi-active .noUi-tooltip {
-  opacity: 1;
+  right: 120% !important;
+  left: auto !important;
+  top: 50% !important;
+  bottom: auto !important;
+  transform: translateY(-50%) !important;
 }
 
 .control-btn.active {
@@ -841,6 +823,16 @@ body:has(.directory-page) .site-header-inner {
   100% { background-position: -200% 0; }
 }
 
+/* Empty period */
+
+.empty-period {
+  margin: 0;
+  padding: 4px 0;
+  font-size: 13px;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
 /* Error state */
 
 .error-state {
@@ -903,9 +895,25 @@ body:has(.directory-page) .site-header-inner {
     align-items: flex-start;
   }
 
-  .date-slider-group {
-    width: 100%;
-    margin-left: 0;
+  .subreddit-detail {
+    padding-right: 30px;
+  }
+
+  .date-slider-panel {
+    right: 2px;
+  }
+
+  .noUi-target {
+    height: 200px !important;
+  }
+
+  .noUi-tooltip {
+    display: none !important;
+  }
+
+  .noUi-handle:hover .noUi-tooltip,
+  .noUi-handle.noUi-active .noUi-tooltip {
+    display: block !important;
   }
 
   /* === Open-all bar: flex row of labeled pill buttons === */
@@ -1097,10 +1105,6 @@ body:has(.directory-page) .site-header-inner {
     padding: var(--spacing-xs) var(--spacing-sm);
   }
 
-  .date-slider-group {
-    max-width: 320px;
-    align-self: center;
-  }
 
   .site-header-inner {
     flex-direction: column;

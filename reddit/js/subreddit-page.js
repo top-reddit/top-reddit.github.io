@@ -219,17 +219,9 @@ function formatSliderMonth(idx) {
 }
 
 function updateSliderLabel(fromIdx, toIdx) {
-  const label = document.getElementById('date-range-label');
   const clearBtn = document.getElementById('date-range-clear');
   const isFullRange = fromIdx <= slider.minIdx && toIdx >= slider.maxIdx;
-
-  if (isFullRange) {
-    label.textContent = 'All time';
-    clearBtn.classList.add('hidden');
-  } else {
-    label.textContent = `${formatSliderMonth(fromIdx)} .. ${formatSliderMonth(toIdx)}`;
-    clearBtn.classList.remove('hidden');
-  }
+  clearBtn.classList.toggle('hidden', isFullRange);
 }
 
 function setupDateSlider() {
@@ -248,6 +240,8 @@ function setupDateSlider() {
     connect: true,
     behaviour: 'drag',
     step: 1,
+    orientation: 'vertical',
+    direction: 'rtl',
     range: { min: slider.minIdx, max: slider.maxIdx },
     tooltips: [
       { to: v => formatSliderMonth(Math.round(v)) },
@@ -350,6 +344,8 @@ async function loadInitialData() {
   if (isNsfw) {
     document.querySelector('.controls').style.display = 'none';
     document.querySelector('.load-more-container').style.display = 'none';
+    const sliderPanel = document.querySelector('.date-slider-panel');
+    if (sliderPanel) sliderPanel.style.display = 'none';
     const container = document.getElementById('posts-container');
     container.innerHTML = '';
     const msg = document.createElement('div');
@@ -359,15 +355,17 @@ async function loadInitialData() {
     return;
   }
 
-  // Fetch and display subreddit info (non-blocking)
-  fetchSubredditAbout(state.subreddit).then(about => {
-    if (gen !== loadGeneration) return;
-    renderSubredditInfo(about);
-  });
-
-  // Fetch subreddit creation date to limit boundaries and update slider
-  const createdTs = await fetchSubredditCreatedDate(state.subreddit);
+  // Fetch subreddit about info and creation date in parallel
+  const [about, pullpushCreatedTs] = await Promise.all([
+    fetchSubredditAbout(state.subreddit),
+    fetchSubredditCreatedDate(state.subreddit)
+  ]);
   if (gen !== loadGeneration) return;
+
+  renderSubredditInfo(about);
+
+  // Use PullPush creation date, fall back to about_cache created_utc
+  const createdTs = pullpushCreatedTs || (about && about.created_utc) || null;
   updateSliderMin();
 
   const sliderFrom = state.dateFrom ? new Date(state.dateFrom + 'T00:00:00') : null;
@@ -484,7 +482,7 @@ async function loadNextPeriods(count) {
 function updateLoadMoreButton() {
   const btn = document.getElementById('load-more-btn');
   const endMsg = document.getElementById('end-of-data-msg');
-  const allDone = state.loadedPeriods >= state.allBoundaries.length;
+  const allDone = state.allBoundaries.length > 0 && state.loadedPeriods >= state.allBoundaries.length;
 
   if (allDone) {
     btn.style.display = 'none';
@@ -515,8 +513,6 @@ function rerenderFromCache() {
 }
 
 function renderTimePeriod(boundary, posts) {
-  if (posts.length === 0) return;
-
   const container = document.getElementById('posts-container');
   const section = document.createElement('section');
   section.className = 'time-group';
@@ -525,6 +521,15 @@ function renderTimePeriod(boundary, posts) {
   header.className = 'time-group-header';
   header.textContent = boundary.label;
   section.appendChild(header);
+
+  if (posts.length === 0) {
+    const empty = document.createElement('p');
+    empty.className = 'empty-period';
+    empty.textContent = 'No posts found';
+    section.appendChild(empty);
+    container.appendChild(section);
+    return;
+  }
 
   const table = document.createElement('table');
   table.className = 'posts-table';
